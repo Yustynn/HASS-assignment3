@@ -13,17 +13,34 @@ async function main() {
     const flatTypes = Object.keys(data).sort()
     state.flatType = flatTypes[0] // default to first entry
 
-    setupSvg()
+    setupElementsAndPutInState()
     makeButtons(flatTypes, data)
     updateViz(data)
 }
 
-function setupSvg() {
+function setupElementsAndPutInState() {
     const svg = d3.select("#svg-container").append('svg')
         .attr("width", WIDTH)
         .attr("height", HEIGHT)
         .attr("viewBox", [0, 0, WIDTH, HEIGHT])
         .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
+
+    const xAxis = svg.append("g")
+        .classed('x-axis', true)
+        .attr("transform", `translate(0,${HEIGHT - MARGIN.bottom})`)
+
+    const yAxis = svg.append("g")
+        .classed('y-axis', true)
+        .attr("transform", `translate(${MARGIN.left},0)`)
+
+    const bars = svg.append("g")
+        .classed('bars', true)
+        .attr('fill', 'skyblue')
+
+    state['svg'] = svg
+    state['bars'] = bars
+    state['xAxis'] = xAxis
+    state['yAxis'] = yAxis
 }
 
 function makeButtons(flatTypes, data) {
@@ -52,7 +69,6 @@ function updateViz(rawData) {
     const yRange = [HEIGHT - MARGIN.bottom, MARGIN.top] // inverted so that 0 at bottom
     const xPadding = 0.1
     const yPadding = 5
-    const color = 'skyblue'
     const title = 'Percentage more cost of high floor vs low floor flat, by town'
 
     // Construct scales, axes, and formats.
@@ -67,10 +83,7 @@ function updateViz(rawData) {
     document.xScale = xScale
     document.yScale = yScale
 
-    const svg = d3.select('svg')
-
-    svg.append("g")
-        .classed('y-axis', true)
+    state['yAxis']
         .attr("transform", `translate(${MARGIN.left},0)`)
         .call(yAxis)
         .call(g => g.select(".domain").remove())
@@ -84,36 +97,48 @@ function updateViz(rawData) {
         //     .attr("text-anchor", "start")
         //     .text(yLabel));
 
-    const bar = svg.append("g")
-        .classed('bars', true)
-        .attr("fill", color)
-        .selectAll("rect")
+    const t = d3.transition().duration(800)
+
+    const bar = state['bars'].selectAll("rect")
         .data(data, d => d.town)
-        .join("rect")
-            .attr("x", d => xScale(d.town))
-            .attr("y", d => yScale(d.value))
-            .attr("height", d => yScale.range()[0] - yScale(d.value))
-            .attr("width", xScale.bandwidth());
+        .join(
+            enter => {
+                console.log('enter', enter.data())
+                enter.append("rect")
+                    .attr("x", d => xScale(d.town))
+                    .attr("y", d => yScale(d.value))
+                    .attr("height", d => yScale.range()[0] - yScale(d.value))
+                    .attr("width", xScale.bandwidth())
+                    .attr('opacity', 0)
+                    .transition(t)
+                    .attr('opacity', 1)
 
-    if (title) bar.append("title")
-        .text(title);
+            },
+            update => {
+                console.log('update', update.data())
+                update
+                    .transition(t)
+                    .attr("x", d => xScale(d.town))
+                    .attr("y", d => yScale(d.value))
+                    .attr("height", d => yScale.range()[0] - yScale(d.value))
+                    .attr("width", xScale.bandwidth());
+            },
+            exit => {
+                console.log('exit', exit.data())
+                exit
+                    .attr('opacity', 1)
+                    .transition(t)
+                    .attr('opacity', 0)
+                    .attr('transform', 'translate(0, 300)')
+                    .remove()
+            },
+        )
 
-    svg.append("g")
-        .classed('x-axis', true)
-        .attr("transform", `translate(0,${HEIGHT - MARGIN.bottom})`)
+    // if (title) bar.append("title")
+    //     .text(title);
+
+    state['xAxis']
         .call(xAxis);
-
-
-
-    // d3.select('#bars rect')
-    //     .data(data)
-    //     .enter()
-    //     .append('rect')
-    //     .attr('fill', 'blue')
-    //     .attr('x', (_, i) => i * 10)
-    //     .attr('y', HEIGHT - 30)
-    //     .attr('width', 30)
-    //     .attr('height', ({ value }) => value * 50)
 }
 
 main()
