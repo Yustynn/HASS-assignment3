@@ -9,6 +9,7 @@ button {
 body {
     align-items: center;
     display: flex;
+    font-family: Helvetica, Arial, sans-serif;
     flex-direction: column;
     justify-content: center;
 }
