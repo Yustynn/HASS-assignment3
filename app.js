@@ -1,3 +1,5 @@
+// a lot of this is (very) heavily modified from https://observablehq.com/@d3/bar-chart
+
 const [WIDTH, HEIGHT] = [1000, 750]
 const MARGIN = {
     left: 30,
