@@ -17,11 +17,11 @@
     <ol>
       <li>Filter to blocks with at least 5 low floor resales (below 7th storey)</li>
       <li>Filter to blocks with at least 5 high floor resales (above 13th storey)</li>
-      <li>Find the ratio of (high floor resale mean) / (low floor resale mean) for each block</li>
+      <li>Find the ratio of (high floor resale mean) / (low floor resale mean) for flats in the same block sold on the same year</li>
       <li>Take the mean of these ratios for each town</li>
     </ol>
     <p>For studying the effect of the flat type, a breakdown is provided by flat type as well.</p>
-    <p>To be honest, there are a lot of things difficult to control for, so do take this with a pinch of salt.</p>
+    <p>To be honest, there are a lot of things difficult to control for, so do take this with a pinch of salt. E.g. didn't control for month-of-year effects, didn't weigh the mean by number of data points per block, etc etc.</p>
     <script src="./d3.v7.min.js"></script>
     <script src="app.js"></script>
   </body>
