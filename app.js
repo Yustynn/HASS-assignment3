@@ -81,7 +81,7 @@ function updateViz(rawData) {
     document.xScale = xScale
     document.yScale = yScale
 
-    const t = d3.transition().duration(800)
+    const t = d3.transition().duration(1200)
 
     state['yAxis']
         .attr("transform", `translate(${MARGIN.left},0)`)
@@ -104,6 +104,7 @@ function updateViz(rawData) {
             enter => {
                 console.log('enter', enter.data())
                 enter.append("rect")
+                    .attr('fill', d => d.value < 0 ? 'red' : 'skyblue')
                     .attr("x", d => xScale(d.town))
                     .attr("y", d => yScale(d.value))
                     .attr("height", d => yScale.range()[0] - yScale(d.value))
@@ -120,7 +121,8 @@ function updateViz(rawData) {
                     .attr("x", d => xScale(d.town))
                     .attr("y", d => yScale(d.value))
                     .attr("height", d => yScale.range()[0] - yScale(d.value))
-                    .attr("width", xScale.bandwidth());
+                    .attr("width", xScale.bandwidth())
+                    .attr('fill', d => d.value < 0 ? 'red' : 'skyblue')
             },
             exit => {
                 console.log('exit', exit.data())
