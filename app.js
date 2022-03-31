@@ -85,6 +85,8 @@ function updateViz(rawData) {
 
     const t = d3.transition().duration(1200)
 
+    state['yAxis'].selectAll('.tick').remove()
+
     state['yAxis']
         .attr("transform", `translate(${MARGIN.left},0)`)
         .call(yAxis)
