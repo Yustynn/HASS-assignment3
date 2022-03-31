@@ -1,9 +1,9 @@
-const [WIDTH, HEIGHT] = [1000, 500]
+const [WIDTH, HEIGHT] = [1000, 750]
 const MARGIN = {
     left: 30,
     right: 30,
     top: 30,
-    bottom: 30,
+    bottom: 100,
 }
 
 const state = {}
@@ -44,9 +44,7 @@ function setupElementsAndPutInState() {
 }
 
 function makeButtons(flatTypes, data) {
-    d3.select('body')
-        .append('div')
-        .select('button')
+    d3.selectAll('#buttons button')
         .data(flatTypes)
         .enter()
             .append('button')
@@ -83,6 +81,8 @@ function updateViz(rawData) {
     document.xScale = xScale
     document.yScale = yScale
 
+    const t = d3.transition().duration(800)
+
     state['yAxis']
         .attr("transform", `translate(${MARGIN.left},0)`)
         .call(yAxis)
@@ -97,7 +97,6 @@ function updateViz(rawData) {
         //     .attr("text-anchor", "start")
         //     .text(yLabel));
 
-    const t = d3.transition().duration(800)
 
     const bar = state['bars'].selectAll("rect")
         .data(data, d => d.town)
@@ -137,8 +136,20 @@ function updateViz(rawData) {
     // if (title) bar.append("title")
     //     .text(title);
 
+    // stolen from https://observablehq.com/@shapiromatron/rotated-axis-labels
+    const rotation = -90
+
     state['xAxis']
-        .call(xAxis);
+        .call(xAxis)
+        .selectAll("text")
+        // .attr("y", Math.abs(rotation - 90) / 5 + 10)
+        .attr('y', -5)
+        .attr("x", -15)
+        // .attr("dx", "-5em")
+        // .attr("dy", "2em")
+        .attr("transform", `rotate(${rotation})`)
+        // .style("text-anchor", rotation < 30 ? "middle" : "start");
+        .style("text-anchor", 'end');
 }
 
 main()

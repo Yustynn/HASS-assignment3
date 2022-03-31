@@ -5,3 +5,11 @@ button {
     margin: 0 10px;
     border: 0;
 }
+
+body, #buttons {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
