@@ -3,7 +3,7 @@ const MARGIN = {
     left: 30,
     right: 30,
     top: 30,
-    bottom: 100,
+    bottom: 150,
 }
 
 const state = {}
@@ -44,7 +44,7 @@ function setupElementsAndPutInState() {
 }
 
 function makeButtons(flatTypes, data) {
-    d3.selectAll('#buttons button')
+    d3.select('#buttons').selectAll('button')
         .data(flatTypes)
         .enter()
             .append('button')
@@ -90,13 +90,6 @@ function updateViz(rawData) {
         .call(g => g.selectAll(".tick line").clone()
             .attr("x2", WIDTH - MARGIN.left - MARGIN.right)
             .attr("stroke-opacity", 0.1))
-        // .call(g => g.append("text")
-        //     .attr("x", -marginLeft)
-        //     .attr("y", 10)
-        //     .attr("fill", "currentColor")
-        //     .attr("text-anchor", "start")
-        //     .text(yLabel));
-
 
     const bar = state['bars'].selectAll("rect")
         .data(data, d => d.town)
@@ -130,27 +123,18 @@ function updateViz(rawData) {
                     .attr('opacity', 1)
                     .transition(t)
                     .attr('opacity', 0)
-                    .attr('transform', 'translate(0, 300)')
+                    .attr('transform', 'translate(100, 0)')
                     .remove()
             },
         )
 
-    // if (title) bar.append("title")
-    //     .text(title);
-
-    // stolen from https://observablehq.com/@shapiromatron/rotated-axis-labels
-    const rotation = -90
-
+    // stolen and heavily modified from https://observablehq.com/@shapiromatron/rotated-axis-labels
     state['xAxis']
         .call(xAxis)
         .selectAll("text")
-        // .attr("y", Math.abs(rotation - 90) / 5 + 10)
         .attr('y', -5)
         .attr("x", -15)
-        // .attr("dx", "-5em")
-        // .attr("dy", "2em")
-        .attr("transform", `rotate(${rotation})`)
-        // .style("text-anchor", rotation < 30 ? "middle" : "start");
+        .attr("transform", `rotate(-90)`)
         .style("text-anchor", 'end');
 }
 
